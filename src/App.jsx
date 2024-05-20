@@ -3,10 +3,25 @@ import Layout from "./layoutt/Layout"
 import Home from "./pages/Home"
 import Musics from "./pages/Musics"
 import Likes from "./pages/Likes"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { getToken } from "./components/utils"
+import { useDispatch } from "react-redux"
+import { create } from "./redux/authSlice"
 
 function App() {
+    const dispatch = useDispatch()
+  useEffect(() => {
+    
+    getToken()
+      .then(res => {  
+        dispatch(create(res))
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  
+  }, [])
+
   return (
     <>
       <Routes>

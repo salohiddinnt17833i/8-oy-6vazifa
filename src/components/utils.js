@@ -1,28 +1,54 @@
 async function getToken() {
-    try {
+    function toTimestamp(expDate) {
+        const [datePart, timePart] = expDate.split(' ');
+        const [day, month, year] = datePart.split('.');
+        const formattedDateString = `${year}-${month}-${day}T${timePart}:00`;
+        const dateObject = new Date(formattedDateString);
+        const dateC = dateObject.getTime().toString()
+        return dateC
+    }
+
+
+    function isExpiredToken() {
+        let expireDate = localStorage.getItem('expireDate')
+        if (!expireDate) {
+            return true
+        }
+
+        let expDate = toTimestamp(expireDate)
+        let currentDate = Date.now()
+        if (expDate < currentDate) {
+            return true
+        }
+
+        return false;
+    }
+
+    if (!localStorage.getItem('expireDate') || !localStorage.getItem('token') || isExpiredToken()) {
         const resp = await fetch(import.meta.env.VITE_API_TOKEN_URL, {
             method: "POST",
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded', // Corrected Content-type to Content-Type
-                'Authorization': `Basic ${btoa(import.meta.env.VITE_CLIENT_ID + ':' + import.meta.env.VITE_CLIENT_SECRET)}` // Fixed typo in template literal
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Basic ${btoa(import.meta.env.VITE_CLIENT_ID + ':' + import.meta.env.VITE_CLIENT_SECRET)}`
             },
-            body: "grant_type=client_credentials" 
-        });
-
-        if (!resp.ok) {
-            throw new Error(`HTTP error! status: ${resp.status}`);
-        }
-
+            body: "grant_type=client_credentials"
+        })
         const auth = await resp.json();
-        const token = auth.access_token;
-        const apiData = OneHour();
+        const expireDate = OneHour();
+        localStorage.setItem('expireDate', expireDate);
+        localStorage.setItem('token', auth.access_token)
 
-        localStorage.setItem('token', token);
-        localStorage.setItem('apiData', apiData);
-
-    } catch (error) {
-        console.error('Error fetching token:', error);
+        return {
+            date: expireDate,
+            token: auth.access_token
+        }
+    } else {
+        return {
+            date: localStorage.getItem('expireDate'),
+            token: localStorage.getItem('token')
+        }
     }
+
 }
 
 function OneHour() {
