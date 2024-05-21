@@ -1,47 +1,80 @@
-import React, { useEffect } from 'react'
 import styled from '@emotion/styled';
-import './playlis.css'
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
+import { getToken } from '../components/utils';
+import { create } from '../redux/authSlice';
+import MusicTables from '../components/MusicTables';
+import './playlis.css'
 function Playlis() {
-  const token = useSelector(store => store.auth.token);
-    const params = useParams()
-    useEffect(()=> {
-        fetch(`https://api.spotify.com/v1/${params.id}`, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          })
-            .then(res => res.json())
-            .then(d => {
-              if (d.message === "Popular Playlists") {
-                setData(d.playlists.items);
-              }
+    const params = useParams();
+    const token = useSelector(store => store.auth.token);
+    const [data, setData] = useState([]);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (!token) {
+            getToken()
+                .then(res => {
+                    dispatch(create(res));
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    }, [token, dispatch]);
+
+    useEffect(() => {
+        if (params.id && token) {
+            fetch(`${import.meta.env.VITE_API_MUSIC}playlists/${params.id}`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             })
-            .catch(err => {
-              console.log(err);
-            });    
-    }, [])
-  
-    const LikesWrapper = styled.div`
-  width: 66%;
-  height: 100vh;
-  overflow-y: auto;
-  background-color: #111111;
-`;
+                .then(res => res.json())
+                .then(d => {
+                    setData(d.tracks.items);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    }, [params.id, token]);
 
-return (
+    const HomeWrapper = styled.div`
+        width: 66%;
+        height: 100vh;
+        overflow-y: auto;
+        background-color: #111111;
+        color: #fff;
+        padding: 20px;
+    `;
 
-    
-
-    <LikesWrapper>
-        <div>
-            <h1>Playlis</h1>
-        </div>
-    </LikesWrapper>
-  )
+    return (
+        <HomeWrapper>
+            <h1>Playlists</h1>
+            {data.length > 0 ? <>
+                <div className='tables'>
+                    <div>#</div>
+                    <div>TITLE</div>
+                    <div>ALBUM</div>
+                    <div>DATE ADDED</div>
+                    <div>TIME</div>
+                </div>
+            </> : <></>
+            }
+            {data.length > 0 ? (
+                data.map(((track, index) => {
+                    return (
+                        <MusicTables data={track} key={index}></MusicTables>
+                    )
+                }))
+            ) : (
+                <p>No tracks available</p>
+            )}
+        </HomeWrapper>
+    );
 }
 
-export default Playlis
+export default Playlis;
