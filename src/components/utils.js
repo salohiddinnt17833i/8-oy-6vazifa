@@ -1,30 +1,35 @@
 async function getToken() {
-    function toTimestamp(expDate) {
-        const [datePart, timePart] = expDate.split(' ');
-        const [day, month, year] = datePart.split('.');
-        const formattedDateString = `${year}-${month}-${day}T${timePart}:00`;
-        const dateObject = new Date(formattedDateString);
-        const dateC = dateObject.getTime().toString()
-        return dateC
-    }
+    // function toTimestamp(expDate) {
+    //     const dateString = expDate;
+    //     const [datePart, timePart] = dateString.split(' ')
+    //     const [day, month, year] = datePart.split('.');
 
+    //     const formattedDateString = `${month}/${day}/${year} ${timePart}`
+    //     const dateObject = new Date(formattedDateString)
+    //     const timestamp = dateObject.getTime();
 
-    function isExpiredToken() {
-        let expireDate = localStorage.getItem('expireDate')
-        if (!expireDate) {
-            return true
-        }
+    //     console.log(10, timestamp);
+    //     console.log(11, Date.now());
+    //     return timestamp
+    // }
 
-        let expDate = toTimestamp(expireDate)
-        let currentDate = Date.now()
-        if (expDate < currentDate) {
-            return true
-        }
+    // function isExpiredToken() {
+    //     let expireDate = localStorage.getItem('expireDate')
+    //     if (!expireDate) {
+    //         return true
+    //     }
 
-        return false;
-    }
+    //     let expDate = toTimestamp(expireDate)
+    //     let currentDate = Date.now()
+    //     if (expDate < currentDate) {
+    //         return true
+    //     }
 
-    if (!localStorage.getItem('expireDate') || !localStorage.getItem('token') || isExpiredToken()) {
+    //     return false;
+    // }
+
+    // if (!localStorage.getItem('expireDate') || !localStorage.getItem('token') || isExpiredToken()) {
+        if (true) {
         const resp = await fetch(import.meta.env.VITE_API_TOKEN_URL, {
             method: "POST",
             headers: {
@@ -41,14 +46,8 @@ async function getToken() {
         return {
             date: expireDate,
             token: auth.access_token
-        }
-    } else {
-        return {
-            date: localStorage.getItem('expireDate'),
-            token: localStorage.getItem('token')
-        }
+        };
     }
-
 }
 
 function OneHour() {
