@@ -2,3 +2,34 @@
     display: flex;
     text-align: left;
 }
+.tabless{
+    background: #000;
+    height: 60px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    border-radius: 20px;
+    padding-left: 20px;
+}
+.p{
+    padding: 3px;
+    width: 100px;
+    color: #B3B3B3;
+    font-size: 13px;
+    font-weight: 450;
+    line-height: 22.77px;
+    text-align: left;
+}
+.pp{
+    font-size: 20px;
+    color: white;
+}
+.wra{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+.time {
+    color: white;
+}

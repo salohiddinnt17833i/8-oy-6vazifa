@@ -5,7 +5,8 @@ import { useParams } from 'react-router-dom';
 import { getToken } from '../components/utils';
 import { create } from '../redux/authSlice';
 import MusicTables from '../components/MusicTables';
-import './playlis.css'
+import './playlis.css';
+
 function Playlis() {
     const params = useParams();
     const token = useSelector(store => store.auth.token);
@@ -34,7 +35,7 @@ function Playlis() {
             })
                 .then(res => res.json())
                 .then(d => {
-                    setData(d.tracks.items);
+                    setData(d.tracks.items.map(item => item.track)); // Extract the track information
                 })
                 .catch(err => {
                     console.log(err);
@@ -54,22 +55,21 @@ function Playlis() {
     return (
         <HomeWrapper>
             <h1>Playlists</h1>
-            {data.length > 0 ? <>
-                <div className='tables'>
-                    <div>#</div>
-                    <div>TITLE</div>
-                    <div>ALBUM</div>
-                    <div>DATE ADDED</div>
-                    <div>TIME</div>
-                </div>
-            </> : <></>
-            }
             {data.length > 0 ? (
-                data.map(((track, index) => {
-                    return (
-                        <MusicTables data={track} key={index}></MusicTables>
-                    )
-                }))
+                <>
+                    <div className='tables header'>
+                        <div className='p pp'>#</div>
+                        <div className='p pp'>TITLE</div>
+                        <div className='p pp'>ALBUM</div>
+                        <div className='p pp'>DATE</div>
+                        <div className='p pp'>TIME</div>
+                    </div>
+                    <div className='wra'>
+                        {data.map((track, index) => (
+                            <MusicTables data={{ track, added_at: track.added_at }} key={track.id || index} />
+                        ))}
+                    </div>
+                </>
             ) : (
                 <p>No tracks available</p>
             )}
