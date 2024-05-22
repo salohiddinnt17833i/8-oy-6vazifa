@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { create } from "../redux/authSlice";
 import Musics from './Musics';
 import './home.css'
+import LoaderComponent from '../components/LoaderComponent';
 
 function Home() {
   const HomeWrapper = styled.div`
@@ -65,7 +66,7 @@ function Home() {
         {
           data.length > 0
             ? data.map((ele, index) => <Musics key={index} data={ele} />)
-            : <p>No items</p>
+            : <LoaderComponent></LoaderComponent>
         }
       </CardWrap>
     </HomeWrapper>

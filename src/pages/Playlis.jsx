@@ -6,6 +6,7 @@ import { getToken } from '../components/utils';
 import { create } from '../redux/authSlice';
 import MusicTables from '../components/MusicTables';
 import './playlis.css';
+import LoaderComponent from '../components/LoaderComponent';
 
 function Playlis() {
     const params = useParams();
@@ -71,7 +72,7 @@ function Playlis() {
                     </div>
                 </>
             ) : (
-                <p>No tracks available</p>
+                <LoaderComponent></LoaderComponent>
             )}
         </HomeWrapper>
     );
