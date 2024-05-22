@@ -65,7 +65,7 @@ function Home() {
         {
           data.length > 0
             ? data.map((ele, index) => <Musics key={index} data={ele} />)
-            : <p>No playlists available</p>
+            : <p>No items</p>
         }
       </CardWrap>
     </HomeWrapper>

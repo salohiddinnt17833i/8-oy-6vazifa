@@ -3,7 +3,6 @@ import './tables.css';
 
 function MusicTables({ data }) {
     const { track, added_at } = data;
-
     return (
         <div className='tables tabless'>
             <div className='p'>{track.track_number}</div>

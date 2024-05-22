@@ -5,3 +5,6 @@
   font-family: sans-serif;
   color: white;
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
